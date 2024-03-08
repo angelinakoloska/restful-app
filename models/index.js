@@ -2,14 +2,19 @@ const Sequelize = require('sequelize')
 const fs = require("fs")
 const path = require("path")
 const basename = path.basename(__filename);
-const sequelize = new Sequelize({
-  host: process.env.HOST,
-  database: process.env.DATABASE_NAME,
-  username: process.env.ADMIN_USERNAME,
-  password: process.env.ADMIN_PASSWORD,
-  dialect: process.env.DIALECT,
-  dialectModel: process.env.DIALECTMODEL,
-});
+require('dotenv').config()
+
+const connection = {
+    dialect: process.env.DIALECT,
+    dialectModel: process.env.DIALECTMODEL,
+    database: process.env.DATABASE_NAME,
+    username: process.env.ADMIN_USERNAME,
+    password: process.env.ADMIN_PASSWORD,
+    host: process.env.HOST
+}
+
+const sequelize = new Sequelize(connection);
+
 const db = {}
 db.sequelize = sequelize
 fs.readdirSync(__dirname)
@@ -21,10 +26,12 @@ fs.readdirSync(__dirname)
     const model = require(path.join(__dirname, file))(sequelize,
       Sequelize);
     db[model.name] = model;
+      console.log(db)
   });
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
-});
-module.exports = db
+  Object.keys(db).forEach(modelName => {
+    if (db[modelName].associate) {
+      db[modelName].associate(db);
+    }
+  });
+
+module.exports = db;

@@ -6,17 +6,17 @@ var SchoolService = require('../services/schoolService');
 var db = require('../models');
 var schoolService = new SchoolService(db);
 
-router.get('/', async (req, res, next) => {
+router.get('/', async function (req, res, next) {
     let schools = await schoolService.getAll();
     res.send(schools);
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', async function (req, res, next) {
     const school = await schoolService.get(req.params.id);
     res.send(school);
 });
 
-router.post('/', jsonParser, async (req, res, next) => {
+router.post('/', jsonParser, async function (req, res, next) {
     let name = req.body.Name;
     let address = req.body.Address;
     let description = req.body.Description;
@@ -24,7 +24,9 @@ router.post('/', jsonParser, async (req, res, next) => {
     res.end();
 });
 
-router.delete('/:id', jsonParser, async (req, res, next) => {
+router.delete('/:id', jsonParser,async function (req, res, next) {
     await schoolService.delete(req.params.id);
     res.end();
 });
+
+module.exports = router;
